@@ -15,12 +15,16 @@ def total_salary(path: str) -> Tuple[int, float]:
                 except IndexError:
                     print('Неправильна розмітка в файлі. має бути так\n'
                           '(text,value)')
+                    return
                 except ValueError:
                     print(f'в рядку (text,value), value має бути числом')
+                    return
             else:
                 print('Файл пустий')
+                return
     else:
         print('Такий шлях не існує')
+        return
 
     total_salary = sum(user_salaries)
     avarage_salary = total_salary / len(user_salaries)
@@ -29,9 +33,11 @@ def total_salary(path: str) -> Tuple[int, float]:
 
 # приклад використання
 def main():
-    total, average = total_salary("data_task1.txt")
-    print(f"Загальна сума заробітної плати: {
-          total}, Середня заробітна плата: {average:.2f}")
+    data = total_salary("data_task1.txt")
+    if data:
+        total, average = data
+        print(f"Загальна сума заробітної плати: {
+            total}, Середня заробітна плата: {average:.2f}")
 
 
 if __name__ == '__main__':
