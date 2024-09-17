@@ -5,27 +5,14 @@ def parse_input(user_input: str) -> Tuple[str, List]:
     cmd = cmd.strip().lower()
     return cmd, *args
 
-def add_contact(args: Tuple[str, str], contacts: Dict[str, str]) -> str:
-    try:
-        name, phone = args
-    except ValueError:
-        return 'Contact not added, wrong name and phone.'
-    if contacts.get(name):
-        print("This name already exists, please enter different name.")
-        return
+def add_contact(name: str, phone: str, contacts: Dict[str, str]) -> str:
     contacts[name] = phone
-    return "Contact added successfully."
 
-def change_contact(args: Tuple[str, str], contacts: Dict[str, str]) -> str:
-    try:
-        name, phone = args
-    except ValueError:
-        return 'Contact not added, wrong name and phone.'
+def change_contact(name: str, phone: str, contacts: Dict[str, str]) -> str:
     contacts.update({name : phone})
-    return "Contact updated successfully."
-
-def show_phone(args: Tuple[str, str], contacts: Dict[str, str]) -> str:
-    return contacts.get(args[0], 'Not Found')
+    
+def show_phone(name: str, contacts: Dict[str, str]) -> str:
+    return contacts.get(name, 'Not Found')
 
 def show_all(contacts: Dict[str, str]) -> None:
     print('Contact and phone: ')
@@ -41,7 +28,12 @@ def main():
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
-
+        if len(args) == 2:
+            name = args[1]
+        elif len(args) > 2:
+            name, phone, _ = args
+        else:
+            print('Contact not added, wrong name and phone.')
         match command:
             case "close" | "exit":
                 print("Good bye!")
@@ -49,11 +41,16 @@ def main():
             case "hello":
                 print("How can I help you?")
             case "add":
-                print(add_contact(args, contacts))
+                if contacts.get(name):
+                    print("This name already exists, please enter different name.")
+                else:
+                    add_contact(name, phone, contacts)
+                    print("Contact added successfully.")
             case "phone":
-                print(f'Contact and phone {args[0]} : {show_phone(args, contacts)}')
+                print(f'Contact and phone {name} : {show_phone(name)}')
             case "change":
-                print(change_contact(args, contacts))
+                change_contact(name, phone, contacts)
+                print("Contact updated successfully.")
             case "all":
                 show_all(contacts)
             case _:
