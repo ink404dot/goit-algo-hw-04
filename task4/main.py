@@ -6,7 +6,10 @@ def parse_input(user_input: str) -> Tuple[str, List]:
     return cmd, *args
 
 def add_contact(name: str, phone: str, contacts: Dict[str, str]) -> str:
+    if contacts.get(name):
+        return {}
     contacts[name] = phone
+    return {name:phone}
 
 def change_contact(name: str, phone: str, contacts: Dict[str, str]) -> str:
     contacts.update({name : phone})
@@ -15,12 +18,7 @@ def show_phone(name: str, contacts: Dict[str, str]) -> str:
     return contacts.get(name, 'Not Found')
 
 def show_all(contacts: Dict[str, str]) -> None:
-    print('Contact and phone: ')
-    if contacts:
-        for name, phone in contacts.items():
-            print(name, ':', phone)
-    else:
-        print('No contacts.')
+    return contacts.items()
 
 def main():
     contacts = {}
@@ -41,10 +39,10 @@ def main():
             case "hello":
                 print("How can I help you?")
             case "add":
-                if contacts.get(name):
+                contact = add_contact(name, phone, contacts)
+                if not contact:
                     print("This name already exists, please enter different name.")
                 else:
-                    add_contact(name, phone, contacts)
                     print("Contact added successfully.")
             case "phone":
                 print(f'Contact and phone {name} : {show_phone(name)}')
@@ -52,7 +50,12 @@ def main():
                 change_contact(name, phone, contacts)
                 print("Contact updated successfully.")
             case "all":
-                show_all(contacts)
+                print('Contact and phone: ')
+                if contacts:
+                    for name, phone in show_all(contacts):
+                        print(name, ':', phone)
+                else:
+                    print('No contacts.')
             case _:
                 print("Invalid command.")
 
